@@ -12,7 +12,7 @@
 	<defaultState>enabled</defaultState>
 
 	<optionsURL>plugins/TrackHistory/settings/basic.html</optionsURL>
-	<type>2</type><!-- type=extension -->
+	<type>2</type>
 
 	<targetApplication>
 		<id>Lyrion Music Server</id>
@@ -20,5 +20,3 @@
 		<maxVersion>*</maxVersion>
 	</targetApplication>
 </extension>
-
-

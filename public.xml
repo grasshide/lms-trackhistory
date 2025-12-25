@@ -9,7 +9,7 @@
       <title lang="EN">Track History</title>
       <desc lang="EN">Record tracks which have been played into the persistent database (persist.db) for later analysis.</desc>
       <url>https://github.com/grasshide/lms-trackhistory/releases/download/1.0/TrackHistory-1.0.zip</url>
-      <sha>292d67f023abb641cba2092d7102251333928e83</sha>
+      <sha>40b7dded3aa7900f9b65ce0bb1a9f14e218be860</sha>
       <creator>grasshide</creator>
     </plugin>
   </plugins>
