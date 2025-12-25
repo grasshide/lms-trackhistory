@@ -45,6 +45,17 @@ This repository is laid out like other LMS plugins (eg. RatingsLight).
 - Played threshold (%)
 - Include remote/radio tracks
 
+
+## Dev
+
+Create a release:
+```bash
+VERSION="1.0"
+zip -r "TrackHistory-${VERSION}.zip" TrackHistory
+shasum -a 1 "TrackHistory-${VERSION}.zip"
+````
+
+
 ## License
 
 GPL-3.0 (see `LICENSE`).
