@@ -9,7 +9,7 @@
 	<creator>grasshide</creator>
 	<category>information</category>
 
-	<defaultState>disabled</defaultState>
+	<defaultState>enabled</defaultState>
 
 	<optionsURL>plugins/TrackHistory/settings/basic.html</optionsURL>
 	<type>2</type><!-- type=extension -->
