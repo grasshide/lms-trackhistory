@@ -1,0 +1,53 @@
+# String file for TrackHistory plugin
+
+PLUGIN_TRACKHISTORY
+	DE	Wiedergabeverlauf
+	EN	Track History
+	ES	Historial de reproducción
+
+PLUGIN_TRACKHISTORY_DESC
+	DE	Speichert abgespielte Titel dauerhaft in der persistenten Datenbank (persist.db) zur späteren Auswertung.
+	EN	Record tracks which have been played into the persistent database (persist.db) for later analysis.
+	ES	Guarda las pistas reproducidas en la base de datos persistente (persist.db) para su análisis posterior.
+
+PLUGIN_TRACKHISTORY_ENABLED
+	DE	Wiedergabeverlauf aufzeichnen
+	EN	Enable track history recording
+	ES	Activar el registro del historial de reproducción
+
+PLUGIN_TRACKHISTORY_ENABLED_DESC
+	DE	Wenn aktiviert, werden Titel in die persistente Datenbank geschrieben, sobald sie lange genug abgespielt wurden.
+	EN	If enabled, tracks are written to the persistent database once they have been played long enough.
+	ES	Si está activado, las pistas se guardan en la base de datos persistente cuando se han reproducido el tiempo suficiente.
+
+PLUGIN_TRACKHISTORY_MIN_TRACK_SECS
+	DE	Titel ignorieren, die kürzer sind als (Sekunden)
+	EN	Ignore tracks shorter than (seconds)
+	ES	Ignorar pistas con una duración inferior a (segundos)
+
+PLUGIN_TRACKHISTORY_MIN_TRACK_SECS_DESC
+	DE	Titel mit einer kürzeren Dauer als dieser Wert werden nicht aufgezeichnet.
+	EN	Tracks shorter than this duration will not be recorded.
+	ES	Las pistas con una duración inferior a este valor no se registrarán.
+
+PLUGIN_TRACKHISTORY_PLAYED_PERCENT
+	DE	Wiedergabe-Schwelle (Prozent)
+	EN	Played threshold (percent)
+	ES	Umbral de reproducción (porcentaje)
+
+PLUGIN_TRACKHISTORY_PLAYED_PERCENT_DESC
+	DE	Prozentsatz eines Titels, der abgespielt werden muss, bevor er aufgezeichnet wird (z.B. 50 = Hälfte des Titels).
+	EN	Percent of a track which must be played before it is recorded (e.g. 50 = half the track).
+	ES	Porcentaje de una pista que debe reproducirse antes de registrarla (p. ej., 50 = la mitad de la pista).
+
+PLUGIN_TRACKHISTORY_INCLUDE_REMOTE
+	DE	Remote-/Radio-Titel einschließen
+	EN	Include remote/radio tracks
+	ES	Incluir pistas remotas/radio
+
+PLUGIN_TRACKHISTORY_INCLUDE_REMOTE_DESC
+	DE	Wenn aktiviert, können auch Remote-/Radio-Titel mit verwendbaren Metadaten aufgezeichnet werden.
+	EN	If enabled, remote/radio tracks with usable metadata can also be recorded.
+	ES	Si está activado, también se pueden registrar pistas remotas/radio con metadatos utilizables.
+
+

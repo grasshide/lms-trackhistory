@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<extensions>
+  <details>
+    <title lang="EN">TrackHistory</title>
+  </details>
+  <plugins>
+    <plugin name="TrackHistory" version="1.0" minTarget="9.0" maxTarget="*">
+      <title lang="EN">Track History</title>
+      <desc lang="EN">Record tracks which have been played into the persistent database (persist.db) for later analysis.</desc>
+      <url>tbd</url>
+      <sha>tbd</sha>
+      <creator>grasshide</creator>
+    </plugin>
+  </plugins>
+</extensions>
+
+

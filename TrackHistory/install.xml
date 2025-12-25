@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<extension>
+	<id>4A61DF3A-1E52-4B90-9B32-3C5D5E3C3A9E</id>
+	<name>PLUGIN_TRACKHISTORY</name>
+	<module>Plugins::TrackHistory::Plugin</module>
+	<version>1.0</version>
+	<description>PLUGIN_TRACKHISTORY_DESC</description>
+	<creator>grasshide</creator>
+	<category>information</category>
+
+	<defaultState>disabled</defaultState>
+
+	<optionsURL>plugins/TrackHistory/settings/basic.html</optionsURL>
+	<type>2</type><!-- type=extension -->
+
+	<targetApplication>
+		<id>Lyrion Music Server</id>
+		<minVersion>9.0</minVersion>
+		<maxVersion>*</maxVersion>
+	</targetApplication>
+</extension>
+
+

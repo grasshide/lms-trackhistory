@@ -1,0 +1,25 @@
+[% PROCESS settings/header.html %]
+
+	[% WRAPPER setting title="PLUGIN_TRACKHISTORY" desc="" %]
+		<div class="prefDesc">[% "PLUGIN_TRACKHISTORY_DESC" | string %]</div>
+	[% END %]
+
+	[% WRAPPER setting title="PLUGIN_TRACKHISTORY_ENABLED" desc="PLUGIN_TRACKHISTORY_ENABLED_DESC" %]
+		<input name="pref_enabled" type="checkbox" [% IF prefs.pref_enabled %] checked [% END %] >
+	[% END %]
+
+	[% WRAPPER setting title="PLUGIN_TRACKHISTORY_MIN_TRACK_SECS" desc="PLUGIN_TRACKHISTORY_MIN_TRACK_SECS_DESC" %]
+		<input type="text" class="stdedit sliderInput_0_600" name="pref_min_track_secs" id="min_track_secs" value="[% prefs.pref_min_track_secs | html %]" size="6">
+	[% END %]
+
+	[% WRAPPER setting title="PLUGIN_TRACKHISTORY_PLAYED_PERCENT" desc="PLUGIN_TRACKHISTORY_PLAYED_PERCENT_DESC" %]
+		<input type="text" class="stdedit sliderInput_0_100" name="pref_played_percent" id="played_percent" value="[% prefs.pref_played_percent | html %]" size="6">
+	[% END %]
+
+	[% WRAPPER setting title="PLUGIN_TRACKHISTORY_INCLUDE_REMOTE" desc="PLUGIN_TRACKHISTORY_INCLUDE_REMOTE_DESC" %]
+		<input name="pref_include_remote" type="checkbox" [% IF prefs.pref_include_remote %] checked [% END %] >
+	[% END %]
+
+[% PROCESS settings/footer.html %]
+
+
