@@ -20,6 +20,7 @@ use Slim::Player::ProtocolHandlers;
 use Slim::Player::Source;
 use Slim::Player::Sync;
 use Slim::Control::Request;
+use Slim::Music::Import;
 use Slim::Schema;
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
@@ -38,6 +39,8 @@ my $log = Slim::Utils::Log->addLogCategory({
 });
 
 my $schemaReady;
+my @pendingInserts;
+my $flushScheduled;
 
 sub getDisplayName {
 	return 'PLUGIN_TRACKHISTORY';
@@ -63,10 +66,110 @@ sub initPlugin {
 		\&newsongCallback,
 		[['playlist'], ['newsong']],
 	);
+
+	# Flush queued DB writes once scanning is done (this event is emitted by LMS).
+	Slim::Control::Request::subscribe(
+		\&_onRescanDone,
+		[['rescan'], ['done']],
+	);
 }
 
 sub shutdownPlugin {
 	Slim::Control::Request::unsubscribe(\&newsongCallback);
+	Slim::Control::Request::unsubscribe(\&_onRescanDone);
+}
+
+sub _onRescanDone {
+	# try to flush any deferred inserts once scanning is done
+	_flushPendingInserts();
+}
+
+sub _scheduleFlush {
+	my ($delay) = @_;
+	$delay ||= 5;
+
+	return if $flushScheduled;
+	$flushScheduled = 1;
+
+	Slim::Utils::Timers::setTimer(
+		undef,
+		Time::HiRes::time() + $delay,
+		sub {
+			$flushScheduled = 0;
+			_flushPendingInserts();
+		},
+	);
+}
+
+sub _flushPendingInserts {
+	return if !@pendingInserts;
+
+	# Don't attempt writes while scanner is running (VirtualLibraries uses the same signal).
+	if ( Slim::Music::Import->stillScanning ) {
+		_scheduleFlush(10);
+		return;
+	}
+
+	return unless _ensureSchema();
+
+	my $dbh = Slim::Schema->dbh;
+	return unless $dbh;
+
+	my $sql = qq{
+		INSERT INTO persistentdb.track_history
+		(url, urlmd5, musicbrainz_id, played, rating, client_id)
+		VALUES (?, ?, ?, ?, ?, ?)
+	};
+
+	my @remaining;
+
+	for my $row (@pendingInserts) {
+		my $ok = eval {
+			my $sth = $dbh->prepare_cached($sql);
+			$sth->execute(
+				$row->{url},
+				$row->{urlmd5},
+				$row->{musicbrainz_id},
+				$row->{played},
+				$row->{rating},
+				$row->{client_id},
+			);
+			1;
+		};
+
+		if ( !$ok ) {
+			my $err = $@ || '';
+
+			# If DB is locked, keep it and retry later.
+			if ( $err =~ /database is locked/i ) {
+				push @remaining, $row;
+				next;
+			}
+
+			# For other errors, drop the row (otherwise we'd loop forever).
+			$log->error("Failed to flush track_history row (dropping): $err");
+		}
+	}
+
+	@pendingInserts = @remaining;
+
+	# If anything left (eg. locked), retry later.
+	if (@pendingInserts) {
+		_scheduleFlush(10);
+	}
+}
+
+sub _queueInsert {
+	my ($row) = @_;
+	return unless $row && ref $row eq 'HASH';
+
+	# Keep queue bounded to avoid unbounded growth if DB stays locked forever.
+	if ( @pendingInserts > 5000 ) {
+		shift @pendingInserts;
+	}
+
+	push @pendingInserts, $row;
+	_scheduleFlush(10);
 }
 
 sub newsongCallback {
@@ -179,6 +282,35 @@ sub _recordPlay {
 	my ( $client, $track, $meta, $opts ) = @_;
 	$opts ||= {};
 
+	# Don't attempt DB writes while scanner is running; queue and retry later.
+	if ( Slim::Music::Import->stillScanning ) {
+		# Still do dedup bookkeeping to avoid repeated queueing for the same play instance.
+		my $master     = $client->master;
+		my $changeTime = int($master->pluginData('trackhistory_playlist_change_time') || $client->currentPlaylistChangeTime() || 0);
+		$master->pluginData(trackhistory_last_recorded => {
+			playlist_change_time => $changeTime,
+			url                  => ($meta->{url} || $track->url),
+		});
+
+		# Build row now (rating/urlmd5 etc. at time of "played").
+		my $url      = ($meta->{url} || $track->url);
+		my $urlmd5   = eval { $track->urlmd5 } || md5_hex($url);
+		my $mbid     = eval { $track->musicbrainz_id } || undef;
+		my $rating   = eval { $track->rating };
+		my $playedAt = time();
+
+		_queueInsert({
+			url           => $url,
+			urlmd5        => $urlmd5,
+			musicbrainz_id=> $mbid,
+			played        => $playedAt,
+			rating        => $rating,
+			client_id     => $client->id,
+		});
+
+		return;
+	}
+
 	return unless _ensureSchema();
 
 	my $dbh = Slim::Schema->dbh;
@@ -224,6 +356,19 @@ sub _recordPlay {
 	};
 
 	if ( $@ ) {
+		# If DB is locked (eg. scanner has a long-running write txn), queue and retry.
+		if ( $@ =~ /database is locked/i ) {
+			_queueInsert({
+				url            => $url,
+				urlmd5         => $urlmd5,
+				musicbrainz_id => $mbid,
+				played         => $played_at,
+				rating         => $rating,
+				client_id      => $client->id,
+			});
+			return;
+		}
+
 		$log->error("Failed to write track_history row: $@");
 		return;
 	}
