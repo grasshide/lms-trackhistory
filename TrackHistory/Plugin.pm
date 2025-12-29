@@ -194,6 +194,10 @@ sub newsongCallback {
 	# Build metadata (especially important for remote tracks).
 	my $meta = _getMetaFor($client, $track, $url);
 
+	# Snapshot rating at playback start (newsong). This enables "rating delta" style
+	# statistics by comparing the rating stored with each play event to later values.
+	$meta->{rating_at_start} = eval { $track->rating };
+
 	# Ignore station-title "newsong" notifications (no duration + playlist index param).
 	if ( !( $meta->{duration} || 0 ) && defined $request->getParam('_p3') ) {
 		main::DEBUGLOG && $log->is_debug && $log->debug('Ignoring station title newsong notification');
@@ -296,7 +300,7 @@ sub _recordPlay {
 		my $url      = ($meta->{url} || $track->url);
 		my $urlmd5   = eval { $track->urlmd5 } || md5_hex($url);
 		my $mbid     = eval { $track->musicbrainz_id } || undef;
-		my $rating   = eval { $track->rating };
+		my $rating   = exists $meta->{rating_at_start} ? $meta->{rating_at_start} : eval { $track->rating };
 		my $playedAt = time();
 
 		_queueInsert({
@@ -335,7 +339,7 @@ sub _recordPlay {
 	# url, urlmd5, musicbrainz_id, played, rating.
 	my $urlmd5 = eval { $track->urlmd5 } || md5_hex($url);
 	my $mbid   = eval { $track->musicbrainz_id } || undef;
-	my $rating = eval { $track->rating };
+	my $rating = exists $meta->{rating_at_start} ? $meta->{rating_at_start} : eval { $track->rating };
 
 	my $sql = qq{
 		INSERT INTO persistentdb.track_history

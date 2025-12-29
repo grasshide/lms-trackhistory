@@ -50,7 +50,7 @@ This repository is laid out like other LMS plugins (eg. RatingsLight).
 
 Create a release:
 ```bash
-VERSION="1.0"
+VERSION="1.1"
 rm TrackHistory-*
 zip -r "TrackHistory-${VERSION}.zip" TrackHistory
 shasum -a 1 "TrackHistory-${VERSION}.zip"

@@ -5,11 +5,11 @@
     <title lang="EN">TrackHistory</title>
   </details>
   <plugins>
-    <plugin name="TrackHistory" version="1.0" minTarget="9.0" maxTarget="*">
+    <plugin name="TrackHistory" version="1.1" minTarget="9.0" maxTarget="*">
       <title lang="EN">Track History</title>
       <desc lang="EN">Record tracks which have been played into the persistent database (persist.db) for later analysis.</desc>
-      <url>https://github.com/grasshide/lms-trackhistory/releases/download/1.0/TrackHistory-1.0.zip</url>
-      <sha>c45264707cc50388ab91df302d7932d321571d01</sha>
+      <url>https://github.com/grasshide/lms-trackhistory/releases/download/1.1/TrackHistory-1.1.zip</url>
+      <sha>feb8b42069f73c99cf3d909cc0366dba5067505c</sha>
       <creator>grasshide</creator>
     </plugin>
   </plugins>
